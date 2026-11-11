@@ -1,0 +1,126 @@
+COMP-3110 PROJECT REQUIREMENTS
+==============================
+
+1. FUNCTIONAL REQUIREMENTS
+
+FR-01: Accept two versions of a file (old and new).
+
+FR-02: Identify which lines in the old file correspond to which lines in the new file.
+
+FR-03: Output line mappings in the format:
+1-1
+3-3
+4-8
+5-4
+6-6
+
+FR-04: Recognize corresponding lines even when their contents have been modified.
+
+FR-05: Detect lines that have been reordered or moved.
+
+FR-06: Detect when one original line has been split into multiple lines.
+
+FR-07: Be language-independent (work with source code written in different programming languages).
+
+
+2. ALGORITHM REQUIREMENTS
+
+Implement the five stages of the LHDiff algorithm:
+
+Stage 1 - Preprocessing:
+- Normalize each line.
+- Remove unnecessary whitespace differences.
+- Normalize capitalization.
+
+Stage 2 - Detect Unchanged Lines:
+- Apply a Unix-diff-style algorithm.
+- Identify unchanged lines.
+- Collect unmatched old and new lines.
+
+Stage 3 - Generate Candidate List:
+- Generate SimHash values for line content and context.
+- Calculate Hamming distances.
+- Select potential matching lines.
+- The presentation suggests k = 15 candidates.
+
+Stage 4 - Resolve Conflicts:
+- Calculate content similarity using normalized Levenshtein distance.
+- Calculate contextual similarity using cosine similarity.
+- Context consists of up to four preceding and four following lines.
+- Calculate combined similarity:
+  Score = 0.6 × Content Similarity + 0.4 × Context Similarity
+- Select the best matches exceeding a similarity threshold.
+
+Stage 5 - Detect Line Splits:
+- Identify unmatched lines.
+- Concatenate consecutive lines in the new file.
+- Compare them against original lines.
+- Detect when one old line corresponds to multiple new lines.
+
+
+3. DATASET AND EVALUATION REQUIREMENTS
+
+EV-01: Create a new dataset containing line-tracking information for 25 different files.
+
+EV-02: Record the expected correct line mappings for the dataset.
+
+EV-03: Evaluate the implementation using the new dataset.
+
+EV-04: Evaluate the implementation using existing datasets.
+
+The presentation mentions Reiss, Eclipse, and NetBeans benchmarks, but does not explicitly require all three.
+
+
+4. BUG-INTRODUCING CHANGE DETECTION
+
+STATUS: Unclear whether mandatory or optional.
+
+The slides list this as the third project goal:
+
+"Can you extend your tool to identify bug introducing changes from bug fix changes?"
+
+Possible implementation:
+- Identify bug-fixing commits using commit messages.
+- Determine which lines were modified to fix the bug.
+- Trace those lines backward through earlier versions.
+- Identify candidate commits that introduced the bug.
+
+This would require access to Git history or another version-control history.
+
+Implementing a version control system from scratch is NOT required.
+
+The professor must clarify whether this extension is mandatory.
+
+
+5. REQUIREMENTS NOT SPECIFIED
+
+- Programming language: Not specified.
+- Graphical user interface: Not required explicitly.
+- Web application: Not required.
+- Database: Not required.
+- Version control system implementation: Not required.
+- Multi-version history storage: Not required.
+- Command-line interface: Not explicitly required.
+- Exact similarity threshold: Not specified.
+- Performance target: Not specified.
+- Project file structure: Not specified.
+- Final submission format: Not specified.
+- Whether bug detection is optional: Not specified.
+
+
+6. EXPECTED END PRODUCT
+
+A working program that:
+
+1. Accepts two versions of a source-code file.
+2. Preprocesses and compares their contents.
+3. Identifies unchanged, modified, reordered, and split lines.
+4. Outputs mappings between corresponding line numbers.
+5. Evaluates its accuracy against expected mappings.
+6. Includes a newly created dataset covering 25 different files.
+7. Is tested against both the new and existing datasets.
+
+If Goal 3 is mandatory, the program must also support identifying potential bug-introducing changes using version-control history.
+
+IMPORTANT:
+The slides explicitly state three project goals, but do not establish whether Goal 3 is optional. The detailed algorithm requirements above are derived from the LHDiff method presented in the slides, rather than a separate formal requirements specification.
