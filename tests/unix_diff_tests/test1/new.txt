@@ -1,0 +1,7 @@
+def calculate_total(prices):
+    total = 0
+    tax = 2
+    for price in prices:
+        total += price * 1.1
+    total += tax
+    return total
